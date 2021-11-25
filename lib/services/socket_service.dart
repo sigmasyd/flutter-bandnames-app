@@ -11,6 +11,8 @@ class SocketService with ChangeNotifier {
 
   ServerStatus _serverStatus = ServerStatus.Connecting;
 
+  get serverStatus => _serverStatus;
+
   IO.Socket get socket => _socket;
   Function get emit => _socket.emit;
 
@@ -26,9 +28,13 @@ class SocketService with ChangeNotifier {
     });
 
     _socket.on('connect', (_) {
-      print('Flutter Connect...');
+      _serverStatus = ServerStatus.Online;
+      notifyListeners();
     });
 
-    _socket.on('disconnect', (_) => print('Flutter Disconnect'));
+    _socket.on('disconnect', (_) {
+      _serverStatus = ServerStatus.Offline;
+      notifyListeners();
+    });
   }
 }
